@@ -1,0 +1,16 @@
+{
+  "name": "parley-messenger",
+  "version": "1.0.0",
+  "description": "A small end-to-end encrypted private messenger (relay server + browser client)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "license": "MIT"
+}

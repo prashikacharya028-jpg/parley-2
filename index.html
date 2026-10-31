@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Parley</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- First run: create an identity -->
+  <main id="onboard" class="onboard" hidden>
+    <div class="onboard-card">
+      <h1 class="wordmark">Parley</h1>
+      <p class="lede">Messages are locked on your device and can only be opened by the person you send them to. The server only ever sees scrambled data.</p>
+      <form id="onboard-form" autocomplete="off">
+        <label for="username">Pick a username</label>
+        <input id="username" name="username" required minlength="3" maxlength="24"
+               pattern="[a-z0-9_]{3,24}" inputmode="latin" autocapitalize="none" spellcheck="false">
+        <p class="hint">3–24 characters: lowercase letters, numbers, underscore.</p>
+        <p id="onboard-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="primary">Create my keys</button>
+      </form>
+      <p class="fine">Your keys are created in this browser and never leave it. If you clear this browser's site data, you lose this identity.</p>
+    </div>
+  </main>
+
+  <!-- Main app -->
+  <div id="app" class="app" hidden>
+    <aside id="side" class="side">
+      <header class="side-head">
+        <div>
+          <div class="wordmark small">Parley</div>
+          <div class="me"><span id="me-name"></span> <span id="status" class="status" data-state="connecting" title="Connecting"></span></div>
+        </div>
+      </header>
+
+      <form id="new-chat" class="new-chat" autocomplete="off">
+        <label for="peer-input" class="sr">Start a chat</label>
+        <input id="peer-input" placeholder="Start a chat with a username" maxlength="24"
+               autocapitalize="none" spellcheck="false">
+        <button type="submit" class="ghost">Start</button>
+      </form>
+      <p id="new-chat-error" class="error pad" role="alert" hidden></p>
+
+      <ul id="contacts" class="contacts" aria-label="Conversations"></ul>
+      <p id="contacts-empty" class="empty pad">No conversations yet. Enter a username above to start one.</p>
+    </aside>
+
+    <section id="thread" class="thread" aria-live="polite">
+      <div id="thread-empty" class="thread-empty">
+        <p>Pick a conversation, or start a new one.</p>
+      </div>
+
+      <div id="thread-view" class="thread-view" hidden>
+        <header class="thread-head">
+          <button id="back" class="icon-btn back" aria-label="Back to conversations">‹</button>
+          <div class="peer">
+            <div id="peer-name" class="peer-name"></div>
+            <div id="peer-verify" class="peer-verify"></div>
+          </div>
+          <button id="safety-btn" class="ghost">Verify</button>
+        </header>
+
+        <div id="key-warning" class="banner" role="alert" hidden>
+          <p><strong>This person's keys changed.</strong> They may have reinstalled, or someone may be intercepting. Compare safety numbers with them another way before you continue.</p>
+          <div class="banner-actions">
+            <button id="key-accept" class="ghost">Trust the new keys</button>
+          </div>
+        </div>
+
+        <ol id="msgs" class="msgs"></ol>
+
+        <form id="composer" class="composer" autocomplete="off">
+          <label for="text" class="sr">Message</label>
+          <textarea id="text" rows="1" maxlength="8000" placeholder="Write a message"></textarea>
+          <button type="submit" class="primary" id="send">Send</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="safety">
+    <form method="dialog" class="safety-card">
+      <h2>Safety number</h2>
+      <p>Compare this with <strong id="safety-peer"></strong> in person or over a call. If both of you see the same number, nobody is sitting between you.</p>
+      <p id="safety-number" class="safety-number"></p>
+      <div class="dialog-actions">
+        <button id="safety-verify" type="button" class="primary">They match</button>
+        <button value="close" class="ghost">Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>
