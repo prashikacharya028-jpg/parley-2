@@ -13,6 +13,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { WebSocketServer } = require('ws');
 
+const BUILD_ID = 'BUILD-14 (1 Nov 2026)';
 const PORT = Number(process.env.PORT) || 3000;
 const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
 
@@ -280,7 +281,7 @@ const server = http.createServer((req, res) => {
 
   if (urlPath === '/healthz') {   // quick check that the newest version is live
     res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
-    return res.end('ok: Parley server running (password sign-in build)');
+    return res.end('ok: Parley ' + BUILD_ID + ' is running');
   }
   if (urlPath === '/') urlPath = '/index.html';
   const name = urlPath.slice(1);
@@ -478,5 +479,5 @@ setInterval(() => {
 }, 30_000).unref();
 
 server.listen(PORT, () => {
-  console.log(`Parley is running at http://localhost:${PORT}`);
+  console.log(`Parley ${BUILD_ID} is running at http://localhost:${PORT}`);
 });
