@@ -56,10 +56,17 @@ function saveSoon() {
 function saveNow() {
   clearTimeout(saveTimer);
   saveTimer = null;
-  const tmp = DATA_FILE + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(db));
-  fs.renameSync(tmp, DATA_FILE);
+  try {
+    const tmp = DATA_FILE + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(db));
+    fs.renameSync(tmp, DATA_FILE);
+  } catch (err) {
+    // Never crash because the disk is read-only or full; keep serving from memory.
+    console.error('Could not save data:', err.message);
+  }
 }
+process.on('uncaughtException', err => console.error('Unexpected error:', err));
+process.on('unhandledRejection', err => console.error('Unexpected rejection:', err));
 process.on('SIGINT', () => { saveNow(); process.exit(0); });
 process.on('SIGTERM', () => { saveNow(); process.exit(0); });
 
@@ -271,6 +278,10 @@ const server = http.createServer((req, res) => {
   try { urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
   catch (_) { res.writeHead(400); return res.end(); }
 
+  if (urlPath === '/healthz') {   // quick check that the newest version is live
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+    return res.end('ok: Parley server running (password sign-in build)');
+  }
   if (urlPath === '/') urlPath = '/index.html';
   const name = urlPath.slice(1);
   if (!Object.prototype.hasOwnProperty.call(FILES, name)) {
